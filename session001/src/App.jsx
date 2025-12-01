@@ -6,7 +6,7 @@ function Header() {
   return (
     <header>
       {/* logo */}
-      <img src={mbdsLogo} className="mbds-logo" alt="MBDS logo" />
+      <img src={mbdsLogo} className="logo" alt="MBDS logo" />
       {/* title */}
       <h1>Introduction à React</h1>
       {/* subtitle */}
@@ -23,12 +23,21 @@ function MainContent() {
   )
 }
 
+function Footer() {
+  return (
+    <footer>
+      <p>Tous droits réservés - Cassion Pierre Robentz</p>
+    </footer>
+  )
+}
+
 function App() {
   return (
-    <>
+    <div className="app-container">
       <Header />
       <MainContent />
-    </>
+      <Footer />
+    </div>
   )
 }
 
