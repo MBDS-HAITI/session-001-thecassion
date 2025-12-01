@@ -35,9 +35,10 @@ function MainContent() {
 }
 
 function Footer() {
+  const year = new Date().getFullYear()
   return (
     <footer>
-      <p>Tous droits réservés - Cassion Pierre Robentz</p>
+      <p>© {year}- Pierre Robentz Cassion, Tous droits réservés</p>
     </footer>
   )
 }
