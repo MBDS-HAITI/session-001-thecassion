@@ -15,11 +15,20 @@ function Header() {
   )
 }
 
-function App() {
-  const [count, setCount] = useState(0)
-
+function MainContent() {
   return (
-    <Header />
+    <main>
+      <p>Ici, nous afficherons des informations interessantes :)</p>
+    </main>
+  )
+}
+
+function App() {
+  return (
+    <>
+      <Header />
+      <MainContent />
+    </>
   )
 }
 
