@@ -1,25 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import mbdsLogo from './assets/mbds.svg'
 import './App.css'
-
-function Header() {
-  return (
-    <header>
-      {/* logo */}
-      <img src={mbdsLogo} className="logo" alt="MBDS logo" />
-      {/* title */}
-      <h1>Introduction à React</h1>
-      {/* subtitle */}
-      <h2>A la découverte des premières notions de React</h2>
-    </header>
-  )
-}
+import data from '../../data.json'
+import Header from './components/layout/Header.jsx'
+import Footer from './components/layout/Footer.jsx'
 
 function MainContent() {
   const [now, setNow] = useState(new Date())
+  useEffect(() => {
+    const intervalId = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(intervalId)
+  }, [])
 
-  // update hour every second
-  setTimeout(() => setNow(new Date()), 1000)
   const Mois = now.toLocaleString('fr-FR', { month: 'long' })
   const Annee = now.getFullYear()
   const Heure = String(now.getHours()).padStart(2, '0')
@@ -28,18 +20,40 @@ function MainContent() {
   const jourNames = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
   const jour = jourNames[now.getDay()]+' '+ String(now.getDate()).padStart(2, '0')
   return (
-    <main>
+    <>
       <p>Bonjour, on est le {jour} , {Mois}, {Annee} et il est {Heure}:{Minute}:{Second}</p>
-    </main>
+
+    </>
   )
 }
 
-function Footer() {
-  const year = new Date().getFullYear()
+// function that enable to choose a random item from ../../data.json
+function getRandomItem() {
+  // implementation here
+  const randomIndex = Math.floor(Math.random() * data.length)
+  return data[randomIndex]
+  
+}
+
+// display an item of data in the body of the page
+function ItemDisplay({item}) {
+/* structure of item: {"unique_id": 2,
+       "course": "Physics 505",
+       "student": {
+           "firstname": "Kevin",
+           "lastname": "Green",
+           "id": 7912
+       },
+       "date": "2022-11-01",
+       "grade": 64
+     } */
   return (
-    <footer>
-      <p>© {year}- Pierre Robentz Cassion, Tous droits réservés</p>
-    </footer>
+    <div className="item-display">
+      <h3>Course: {item.course}</h3>
+      <p>Student: {item.student.firstname} {item.student.lastname} (ID: {item.student.id})</p>
+      <p>Date: {item.date}</p>
+      <p>Grade: {item.grade}</p>
+    </div>
   )
 }
 
@@ -47,7 +61,10 @@ function App() {
   return (
     <div className="app-container">
       <Header />
+      <main>
       <MainContent />
+      <ItemDisplay item={getRandomItem()} />
+      </main>
       <Footer />
     </div>
   )
