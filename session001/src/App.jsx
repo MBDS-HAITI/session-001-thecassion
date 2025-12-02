@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import mbdsLogo from './assets/mbds.svg'
 import './App.css'
 import data from '../../data.json'
-import Header from './components/layout/Header.jsx'
+import Header from './components/layout/Header/Header.jsx'
 import Footer from './components/layout/Footer.jsx'
 
 function MainContent() {
@@ -32,7 +32,6 @@ function getRandomItem() {
   // implementation here
   const randomIndex = Math.floor(Math.random() * data.length)
   return data[randomIndex]
-  
 }
 
 // display an item of data in the body of the page
