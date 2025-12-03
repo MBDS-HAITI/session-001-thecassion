@@ -4,7 +4,7 @@ import './App.css'
 import data from '../../data.json'
 import Header from './components/layout/Header/Header.jsx'
 import Footer from './components/layout/Footer.jsx'
-
+import { Router, routes } from './router'
 function MainContent() {
   const [now, setNow] = useState(new Date())
   useEffect(() => {
@@ -61,8 +61,7 @@ function App() {
     <div className="app-container">
       <Header />
       <main>
-      <MainContent />
-      <ItemDisplay item={getRandomItem()} />
+      <Router routes={routes} defaultRoute="#home" />
       </main>
       <Footer />
     </div>

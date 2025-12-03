@@ -3,16 +3,32 @@ import MenuItem from "./MenuItem.jsx";
 import styles from "./Menu.module.css";
 
 function Menu() {
+    const [activePath, setActivePath] = React.useState(window.location.hash ||'#home');
+    const menuList = [
+        ["Home", "#home"],
+        ["Notes", "#notes"],
+        ["Etudiants", "#students"],
+        ["Matières", "#matieres"],
+        ["A propos", "#about"]
+    ];
+    const handleMenuClick = (path) => {
+        setActivePath(path);
+        // change the URL hash without reloading the page
+        globalThis.location.hash = path;
+    };
+
     return (
         <nav className={styles.nav}>
         <ul className={styles.menu}>
             {
-            [   ["Home", "#home"],
-                ["Notes", "#notes"],
-                ["Etudiants", "#students"],
-                ["Matières", "#matieres"],
-                ["A propos", "#about"]].map(([label, link]) => (
-                <MenuItem key={label} label={label} link={link} />
+            menuList.map(([label, link]) => (
+                <MenuItem 
+                key={label}
+                label={label}
+                link={link}
+                isActive={activePath === link}
+                onClick={() => handleMenuClick(link)}
+                />
             ))
         }
         </ul>
