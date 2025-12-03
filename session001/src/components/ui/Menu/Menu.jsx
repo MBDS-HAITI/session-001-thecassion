@@ -8,7 +8,7 @@ function Menu() {
         ["Home", "#home"],
         ["Notes", "#notes"],
         ["Etudiants", "#students"],
-        ["Matières", "#matieres"],
+        ["Matières", "#subjects"],
         ["A propos", "#about"]
     ];
     const handleMenuClick = (path) => {

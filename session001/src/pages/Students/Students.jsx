@@ -1,12 +1,15 @@
 import React from "react";
+import data from "../../../../data.json"
+import {DataTable} from "../../components/ui";
 
 function Students() {
+    const students = data.map(item => item.student);
+    let uniqueStudents = [...new Set(students)];
+    // student properties in data
+    let studentProperties = Object.keys(data[0].student).filter(key => key !== 'student');
     return (
-        <div>
-            <h1>Gestion des Étudiants</h1>
-            <p>Cette section vous permet de gérer les informations des étudiants.</p>
-            <p>Vous pouvez ajouter, modifier ou supprimer des étudiants selon vos besoins.</p>
-        </div>
+        <DataTable data={uniqueStudents} />
+
     );
     
 }
