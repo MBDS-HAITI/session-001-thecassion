@@ -7,7 +7,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
 import styles from './DataTable.module.css';
+import InputAdornment from "@mui/material/InputAdornment";
 
 //flatten data function with recursive flattening
 function flattenData(data) {
@@ -39,34 +41,113 @@ function flattenData(data) {
     return {flatData, keys: Array.from(keys)};
 }
 
+const sortKeys = (data, sortConfig) => {
+    if (!sortConfig) return data;
+    const { key, direction } = sortConfig;
+    return [...data].sort((a, b) => {
+        if (a[key] < b[key]) {
+            return direction === 'asc' ? -1 : 1;
+        }
+        if (a[key] > b[key]) {
+            return direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+    });
+};
+
+const filterData = (data, searchItem) => {
+    if (!searchItem) return data;
+    const lowercasedSearchItem = searchItem.toLowerCase();
+    return data.filter(item =>
+        Object.values(item).some(
+            value =>
+                value &&
+                value.toString().toLowerCase().includes(lowercasedSearchItem)
+        )
+    );
+};
+
+
 function DataTable({data, entityKey}) {
+    const [sortConfig, setSortConfig] = React.useState({key: null, direction: 'asc'});
+    const [searchItem, setSearchItem] = React.useState('');
+
+    const handlleSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({key, direction});
+    }
 
     let {flatData, keys} = flattenData(data);
     if(entityKey){
         keys = entityKey;
     }
+    const getSortIcon = (key) => {
+        if (!sortConfig || sortConfig.key !== key) return null;
+        return sortConfig.direction === 'asc' ?
+         ' ▲' : ' ▼';
+    }
 
+    // Filter data
+    const filteredData = filterData(flatData, searchItem);
+
+    // Sort data
+    const sortedData = sortKeys(filteredData, sortConfig);
 
     // flatten data with a 
     return (
         <div className={styles.container}>
+            <div className={styles.searchContainer}>
+                <TextField
+                    label="Rechercher dans le tableau"
+                    variant="outlined"
+                    placeholder="Tapez pour rechercher..."
+                    value={searchItem}
+                    onChange={(e) => setSearchItem(e.target.value)}
+                    className={styles.searchField}
+                    slotProps={
+                        {
+                            input: {
+                                startAdornment: (<InputAdornment position="start">🔍</InputAdornment>)
+                            }
+                        }
+                    }
+                />
+            </div>
+        
             <TableContainer component={Paper} className={styles.tableContainer}>
                 <Table className={styles.table}>
                     <TableHead className={styles.tableHead}>
                         <TableRow>
                             {
                                 keys.map((property) => (
-                                    <TableCell key={property} className={styles.headerCell}>{property}</TableCell>
+                                    <TableCell 
+                                    key={property}
+                                    className={`${styles.headerCell} ${styles.sortableHeader}`}
+                                    onClick={() => handlleSort(property)}
+                                    >
+                                        {property}
+                                        <span className={styles.sortIndicator}>
+                                            {getSortIcon(property)}
+                                        </span>
+                                    </TableCell>
                                 ))
                             }
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {flatData.length > 0 ? (
-                            flatData.map((note) => (
+                        {sortedData.length > 0 ? (
+                            sortedData.map((note) => (
                                 <TableRow key={note.id} className={styles.tableRow}>
                                     {keys.map((property) => (
-                                        <TableCell key={note.id + property} className={styles.tableCell}>{note[property]}</TableCell>
+                                        <TableCell
+                                        key={note.id + property} 
+                                        className={styles.tableCell}
+                                        >
+                                            {note[property]}
+                                        </TableCell>
                                     ))}
                                 </TableRow>
                             ))
