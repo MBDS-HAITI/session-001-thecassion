@@ -141,3 +141,31 @@
 .sortableHeader:hover .sortIcon {
     color: rgba(255, 255, 255, 1);
 }
+
+.resultCount {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+.pagination {
+    border-top: 1px solid rgba(224, 224, 224, 0.5);
+    background-color: #fafafa;
+}
+
+.pagination .MuiTablePagination-toolbar {
+    padding: 8px 16px;
+}
+
+.pagination .MuiTablePagination-selectLabel,
+.pagination .MuiTablePagination-displayedRows {
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+.sortIndicator {
+    margin-left: 4px;
+    font-size: 0.75rem;
+    opacity: 0.7;
+}

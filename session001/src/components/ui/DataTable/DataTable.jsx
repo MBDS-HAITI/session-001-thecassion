@@ -10,6 +10,7 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import styles from './DataTable.module.css';
 import InputAdornment from "@mui/material/InputAdornment";
+import TablePagination from "@mui/material/TablePagination";
 
 //flatten data function with recursive flattening
 function flattenData(data) {
@@ -71,6 +72,8 @@ const filterData = (data, searchItem) => {
 function DataTable({data, entityKey}) {
     const [sortConfig, setSortConfig] = React.useState({key: null, direction: 'asc'});
     const [searchItem, setSearchItem] = React.useState('');
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     const handlleSort = (key) => {
         let direction = 'asc';
@@ -96,6 +99,9 @@ function DataTable({data, entityKey}) {
     // Sort data
     const sortedData = sortKeys(filteredData, sortConfig);
 
+    // paginate data
+    const paginatedData = sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
     // flatten data with a 
     return (
         <div className={styles.container}>
@@ -115,6 +121,9 @@ function DataTable({data, entityKey}) {
                         }
                     }
                 />
+                <div className={styles.resultCount}>
+                    {sortedData.length} résultat{sortedData.length > 1 ? 's' : ''}
+                </div>
             </div>
         
             <TableContainer component={Paper} className={styles.tableContainer}>
@@ -138,8 +147,8 @@ function DataTable({data, entityKey}) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {sortedData.length > 0 ? (
-                            sortedData.map((note) => (
+                        {paginatedData.length > 0 ? (
+                            paginatedData.map((note) => (
                                 <TableRow key={note.id} className={styles.tableRow}>
                                     {keys.map((property) => (
                                         <TableCell
@@ -160,6 +169,16 @@ function DataTable({data, entityKey}) {
                         )}
                     </TableBody>
                 </Table>
+                <TablePagination
+                    component="div"
+                    count={sortedData.length}
+                    page={page}
+                    onPageChange={(event, newPage) => setPage(newPage)}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={(event) => setRowsPerPage(parseInt(event.target.value, 10))}
+                    rowsPerPageOptions={[5, 10, 25]}
+                    className={styles.pagination}
+                />
             </TableContainer>
         </div>
     );
