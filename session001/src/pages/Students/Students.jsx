@@ -1,14 +1,23 @@
 import React from "react";
-import data from "../../../../data.json"
 import {DataTable} from "../../components/ui";
 
 function Students() {
-    const students = data.map(item => item.student);
-    let uniqueStudents = [...new Set(students)];
+    const [data, setData] = React.useState([]);
+
+    React.useEffect(() => {
+        // fetch data from http://localhost:8010/api/students
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/students`)
+            .then((response) => response.json())
+            .then((data) => {
+                setData(data);
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    }, []);
     // student properties in data
-    let studentProperties = Object.keys(data[0].student).filter(key => key !== 'student');
     return (
-        <DataTable data={uniqueStudents} />
+        <DataTable data={data} />
 
     );
     

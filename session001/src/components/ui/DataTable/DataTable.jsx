@@ -147,12 +147,12 @@ function DataTable({data, entityKey}) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {paginatedData.length > 0 ? (
+                        {(paginatedData.length > 0 || paginatedData===null) ? (
                             paginatedData.map((note) => (
-                                <TableRow key={note.id} className={styles.tableRow}>
+                                <TableRow key={note[keys[0]]} className={styles.tableRow}>
                                     {keys.map((property) => (
                                         <TableCell
-                                        key={note.id + property} 
+                                        key={note[keys[0]]+ property} 
                                         className={styles.tableCell}
                                         >
                                             {note[property]}
