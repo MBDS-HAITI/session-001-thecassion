@@ -18,20 +18,29 @@ function flattenData(data) {
     let flatData = data.map(item => {
         let flatItem = {};
         function recurse(curr, prop) {
+            // Skip functions and symbols
+            if (typeof curr === 'function' || typeof curr === 'symbol') {
+                return;
+            }
+            
             if (Object(curr) !== curr) {
                 flatItem[prop] = curr;
             } else if (Array.isArray(curr)) {
                 for (let i = 0; i < curr.length; i++) {
                     recurse(curr[i], prop + "[" + i + "]");
                 }
-            } else {
+            } else if (typeof curr === 'object' && curr !== null) {
                 let isEmpty = true;
                 for (let p in curr) {
+                    // Skip functions and symbols in object properties
+                    if (typeof curr[p] === 'function' || typeof curr[p] === 'symbol') {
+                        continue;
+                    }
                     isEmpty = false;
                     recurse(curr[p], prop ? prop + "." + p : p);
                 }
                 if (isEmpty && prop) {
-                    flatItem[prop] = {};
+                    flatItem[prop] = '';
                 }
             }
         }
@@ -83,7 +92,7 @@ function DataTable({data, entityKey}) {
         setSortConfig({key, direction});
     }
 
-    let {flatData, keys} = flattenData(data);
+    let keys = Object.keys(data[0] || {});
     if(entityKey){
         keys = entityKey;
     }
@@ -94,7 +103,7 @@ function DataTable({data, entityKey}) {
     }
 
     // Filter data
-    const filteredData = filterData(flatData, searchItem);
+    const filteredData = filterData(data, searchItem);
 
     // Sort data
     const sortedData = sortKeys(filteredData, sortConfig);
@@ -148,18 +157,26 @@ function DataTable({data, entityKey}) {
                     </TableHead>
                     <TableBody>
                         {(paginatedData.length > 0 || paginatedData===null) ? (
-                            paginatedData.map((note) => (
-                                <TableRow key={note[keys[0]]} className={styles.tableRow}>
-                                    {keys.map((property) => (
-                                        <TableCell
-                                        key={note[keys[0]]+ property} 
-                                        className={styles.tableCell}
-                                        >
-                                            {note[property]}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
+                            paginatedData.map((note) => {
+                                // first key not null or undefined
+                                let firstKey = keys.find(key => note[key] !== null && note[key] !== undefined);
+                                return (  
+                                <TableRow key={note[firstKey]} className={styles.tableRow}>
+                                    {keys.map((property) => {
+                                        const value = note[property];
+                                        return (
+                                            <TableCell
+                                                key={note[firstKey] + property} 
+                                                className={styles.tableCell}
+                                            >
+                                                {note[property]}
+                                            </TableCell>
+                                        );
+                                    })}
+                                </TableRow>)
+                            }
+                        
+                        )
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={keys.length} className={styles.emptyState}>

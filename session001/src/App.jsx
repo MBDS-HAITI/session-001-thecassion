@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
-import mbdsLogo from './assets/mbds.svg'
 import './App.css'
 import data from '../../data.json'
 import Header from './components/layout/Header/Header.jsx'
 import Footer from './components/layout/Footer.jsx'
-import { Router, routes } from './router'
+import { Router } from './router'
 function MainContent() {
   const [now, setNow] = useState(new Date())
   useEffect(() => {
@@ -61,7 +60,7 @@ function App() {
     <div className="app-container">
       <Header />
       <main>
-      <Router routes={routes} defaultRoute="#home" />
+      <Router />
       </main>
       <Footer />
     </div>
