@@ -1,19 +1,19 @@
 import React from "react";
+import useFetch from "../../hooks/useFetch";
 import { useParams, Link } from "react-router-dom";
 import { CircularProgress, Alert, Card, CardContent, Typography, Chip } from "@mui/material";
-import useFetch from "../../hooks/useFetch";
 import { DataTable } from "../../components/ui";
 
-function StudentDetails() {
+function SubjectDetails() {
     const { id } = useParams();
-    const { data: student, loading, error } = useFetch(`${import.meta.env.VITE_API_BASE_URL}/students/${id}`);
+    const { data: course, loading, error } = useFetch(`${import.meta.env.VITE_API_BASE_URL}/courses/${id}`);
 
     const gradesData = React.useMemo(() => {
-        if (!student?.grades) return [];
+        if (!course?.grades) return [];
         
-        return student.grades.map((grade) => ({
-            courseName: grade.course.name,
-            courseCode: grade.course.code,
+        return course.grades.map((grade) => ({
+            studentFirstName: grade.student.firstName,
+            studentLastName: grade.student.lastName,
             grade: grade.grade,
             date: new Date(grade.date).toLocaleDateString('fr-FR'),
             view: (
@@ -25,7 +25,7 @@ function StudentDetails() {
                 />
             )
         }));
-    }, [student]);
+    }, [course]);
 
     if (loading) {
         return (
@@ -38,15 +38,15 @@ function StudentDetails() {
     if (error) {
         return (
             <Alert severity="error" style={{ margin: '2rem' }}>
-                Erreur lors du chargement de l'étudiant : {error}
+                Erreur lors du chargement de la matière : {error}
             </Alert>
         );
     }
 
-    if (!student) {
+    if (!course) {
         return (
             <Alert severity="warning" style={{ margin: '2rem' }}>
-                Étudiant non trouvé
+                Matière non trouvée
             </Alert>
         );
     }
@@ -56,25 +56,26 @@ function StudentDetails() {
             <Card style={{ marginBottom: '2rem' }}>
                 <CardContent>
                     <Typography variant="h4" gutterBottom>
-                        {student.firstName} {student.lastName}
+                        {course.name}
                     </Typography>
                     <Typography variant="body1" color="textSecondary">
-                        ID: {student.id}
+                        Code: {course.code}
                     </Typography>
                 </CardContent>
             </Card>
 
             <Typography variant="h5" gutterBottom style={{ marginTop: '2rem' }}>
-                Notes de l'étudiant
+                Notes des étudiants
             </Typography>
             {gradesData.length > 0 ? (
                 <DataTable data={gradesData} />
             ) : (
                 <Alert severity="info">
-                    Aucune note disponible pour cet étudiant
+                    Aucune note disponible pour cette matière
                 </Alert>
             )}
         </div>
     );
 }
-export default StudentDetails;
+
+export default SubjectDetails;
